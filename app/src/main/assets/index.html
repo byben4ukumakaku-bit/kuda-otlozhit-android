@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'">
+  <meta name="theme-color" content="#142a4b">
+  <meta name="description" content="Распределяйте доход между своими целями и узнавайте, сколько отложить на каждую.">
+  <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css">
+  <title>Куда отложить — план дохода</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand" aria-label="Куда отложить">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>куда отложить</span>
+      </div>
+      <span class="top-note">Личный план денег</span>
+    </header>
+
+    <main>
+      <div class="page-intro">
+        <div>
+          <span class="eyebrow">ПЛАНИРОВЩИК ДОХОДА</span>
+          <h1>Получил деньги.<br><em>Что дальше?</em></h1>
+        </div>
+        <p>Укажи сумму дохода. Мы предложим, сколько оставить на расходы и сколько внести в каждую цель.</p>
+      </div>
+
+      <div class="workbench">
+        <section class="income-panel" aria-labelledby="income-heading">
+          <div class="panel-kicker"><span class="kicker-line"></span> НОВОЕ ПОСТУПЛЕНИЕ</div>
+          <h2 id="income-heading">Сколько пришло?</h2>
+          <p class="panel-subtitle">Введи сумму, которая уже у тебя на руках.</p>
+
+          <form id="plan-form" novalidate>
+            <label class="field-label" for="income">Доход</label>
+            <div class="income-input-wrap">
+              <input id="income" name="income" type="text" inputmode="decimal" autocomplete="off" placeholder="Например, 85 000" aria-describedby="income-error" required>
+              <span>₽</span>
+            </div>
+            <p class="field-error" id="income-error" role="alert" hidden></p>
+
+            <div class="share-heading">
+              <label for="share">Отложить на цели</label>
+              <output id="share-output" for="share">20%</output>
+            </div>
+            <input id="share" name="share" type="range" min="0" max="100" value="20" step="1">
+            <div class="share-scale"><span>0%</span><span>100%</span></div>
+            <div class="expense-preview" id="expense-preview">Остальное останется на расходы. Долю можно изменить.</div>
+
+            <button class="primary-button" type="submit">Составить план <span aria-hidden="true">↗</span></button>
+          </form>
+          <p class="panel-foot">Это подсказка для планирования. Деньги никуда не переводятся.</p>
+        </section>
+
+        <section class="plan-panel" id="plan-panel" aria-labelledby="plan-heading">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">РЕКОМЕНДАЦИЯ</span>
+              <h2 id="plan-heading">Твой план</h2>
+            </div>
+            <span class="plan-date" id="plan-date"></span>
+          </div>
+          <div id="plan-content" aria-live="polite">
+            <div class="empty-plan">
+              <span class="empty-symbol" aria-hidden="true">₽</span>
+              <h3>Суммы появятся здесь</h3>
+              <p>Добавь свои цели, введи доход и нажми «Составить план».</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="goals-section" aria-labelledby="goals-heading">
+        <div class="goals-heading">
+          <div>
+            <span class="eyebrow">НА ЧТО КОПИШЬ</span>
+            <h2 id="goals-heading">Мои цели <span id="goals-count" class="count"></span></h2>
+          </div>
+          <button id="add-goal" class="add-button" type="button"><span aria-hidden="true">＋</span> Добавить цель</button>
+        </div>
+        <div id="goals-list" class="goals-grid"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Твои суммы и цели сохраняются только в этом браузере.</span>
+      <span>Расчёт по заданным правилам; решение всегда за тобой.</span>
+    </footer>
+  </div>
+
+  <dialog id="goal-dialog" class="goal-dialog" aria-labelledby="dialog-heading">
+    <form id="goal-form" novalidate>
+      <div class="dialog-top">
+        <div><span class="eyebrow">МОЯ ЦЕЛЬ</span><h2 id="dialog-heading">Добавить цель</h2></div>
+        <button type="button" class="icon-button" id="close-dialog" aria-label="Закрыть">×</button>
+      </div>
+      <label for="goal-name">Название</label>
+      <input id="goal-name" name="name" type="text" maxlength="48" placeholder="Например, отпуск" required>
+      <div class="form-row">
+        <div><label for="goal-target">Нужно собрать, ₽</label><input id="goal-target" name="target" type="text" inputmode="numeric" placeholder="100 000" required></div>
+        <div><label for="goal-saved">Уже отложено, ₽</label><input id="goal-saved" name="saved" type="text" inputmode="numeric" placeholder="0"></div>
+      </div>
+      <div class="form-row">
+        <div><label for="goal-date">К какому дню <span class="optional">необязательно</span></label><input id="goal-date" name="date" type="date"></div>
+        <div><label for="goal-priority">Приоритет</label><select id="goal-priority" name="priority"><option value="normal">Обычный</option><option value="high">Важный</option></select></div>
+      </div>
+      <p id="goal-error" class="field-error" role="alert" hidden></p>
+      <div class="dialog-actions"><button type="button" id="delete-goal" class="delete-button" hidden>Удалить</button><button type="submit" class="primary-button">Сохранить цель</button></div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script defer src="/assets/app.bundle.js"></script>
+</body>
+</html>
